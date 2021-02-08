@@ -37,10 +37,17 @@ HW::HW(void) {
   /*
    Initialize wiringPi and define pins to be used
   */
-  wiringPiSetupGpio();  // set wiring to BCM
-  PWMOutputPin = 18;    // physical pin 12
-  SignalInputPin = 21;  // physical pin 40
-  pinMode(SignalInputPin, INPUT);
+  uid_t uid = getuid();
+  if (uid == 0) {
+    wiringPiSetupGpio();  // set wiring to BCM
+    PWMOutputPin = 18;    // physical pin 12
+    SignalInputPin = 21;  // physical pin 40
+    pinMode(PWMOutputPin, PWM_OUTPUT);
+    pinMode(SignalInputPin, INPUT);
+  } else {
+    fprintf(stdout, "This object, built with the HW class, requires root privilege\n");
+    exit(-1);
+  }
 };
 HW::~HW(void) {
 };  
